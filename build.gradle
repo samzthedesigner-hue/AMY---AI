@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 34
+
+    defaultConfig {
+        applicationId "com.amy.assistant"
+        minSdkVersion 26
+        targetSdkVersion 34
+        versionCode 494
+        versionName "4.9.4-PRODUCTION"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    // Required for legacy-style external storage access on API 29+
+    // (paired with android:requestLegacyExternalStorage="true" in the manifest)
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+repositories {
+    google()
+    mavenCentral()
+    // AMY_LLAMA_AAR: JitPack is required for the llama.cpp Android AAR dependency below.
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // Kotlin + Coroutines
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+
+    // AndroidX + Material
+    implementation "androidx.core:core-ktx:1.12.0"
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "com.google.android.material:material:1.11.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"
+    implementation "androidx.core:core:1.12.0"
+
+    // ExoPlayer / Media3 (Group 3 - Media)
+    implementation "androidx.media3:media3-exoplayer:1.2.1"
+    implementation "androidx.media3:media3-ui:1.2.1"
+    implementation "androidx.media3:media3-common:1.2.1"
+
+    // TFLite (Group 7 - Vision)
+    implementation "org.tensorflow:tensorflow-lite:2.14.0"
+    implementation "org.tensorflow:tensorflow-lite-support:0.4.4"
+
+    // Jsoup (Group 11 - Web scraping / Read URL / YT Summary)
+    implementation "org.jsoup:jsoup:1.17.2"
+
+    // OkHttp (all network modules)
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+
+    // JSON (org.json is part of Android SDK already; no extra dependency needed)
+
+    // ---- AMY_LLAMA_AAR ----
+    // Offline Phi-3 GGUF inference (Group 12) requires a prebuilt llama.cpp Android AAR
+    // since AIDE cannot compile raw NDK/C++ code. The coordinate below is a PLACEHOLDER —
+    // you must verify a currently-published JitPack artifact and replace this line.
+    // Example (VERIFY BEFORE USE): implementation "com.github.ggerganov:llama.cpp-android:master-SNAPSHOT"
+    // See AmyOfflineBrain.kt header comment for full context on this dependency.
+}
